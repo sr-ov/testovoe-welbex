@@ -65,11 +65,11 @@ const onChangeSelectedColOptionIndex = (e: Event) => {
 const currentPage = ref(1)
 const pageItemsCount = 5
 const totalPageCount = computed(() => {
-	const totalPagesCount = body.value.length
+	const totalItemsCount = body.value.length
 
-	return totalPagesCount < pageItemsCount
+	return totalItemsCount < pageItemsCount
 		? 1
-		: Math.ceil(totalPagesCount / pageItemsCount)
+		: Math.ceil(totalItemsCount / pageItemsCount)
 })
 
 const slice = computed((): { start: number; end: number } => {
