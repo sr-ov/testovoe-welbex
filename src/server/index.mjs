@@ -9,8 +9,12 @@ const app = express()
 app.use(cors())
 
 app.get('/table', async (req, res) => {
-	const cols = await Column.findAll()
-	res.json(cols)
+	try {
+		const cols = await Column.findAll()
+		res.json(cols)
+	} catch (error) {
+		console.error(error)
+	}
 })
 
 const start = async () => {

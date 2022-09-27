@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 import { TheTable } from '@/components'
 import type { Body, Head } from '@/types'
 import { getTable } from '@/api'
 import { useAsync } from '@/composables'
+import { formatDateRu } from '@/utils'
 
-const { data: body, error } = await useAsync<Body[]>(getTable)
+const { data: _body, error } = await useAsync<Body[]>(getTable)
 
 const head = ref<Head[]>([
 	{
@@ -33,6 +34,13 @@ const head = ref<Head[]>([
 		filters: ['<', '>', '='],
 	},
 ])
+
+const body = computed(() => {
+	return _body.value?.map((el) => ({
+		...el,
+		createdAt: formatDateRu(el.createdAt),
+	}))
+})
 </script>
 
 <template>
