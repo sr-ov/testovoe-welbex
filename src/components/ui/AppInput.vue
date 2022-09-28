@@ -4,11 +4,12 @@ import { computed } from 'vue'
 interface Props {
 	modelValue: string
 }
+interface Emits {
+	(e: 'update:modelValue', value: string): void
+}
 
 const props = defineProps<Props>()
-const emit = defineEmits<{
-	(e: 'update:modelValue', value: string): void
-}>()
+const emit = defineEmits<Emits>()
 
 const value = computed({
 	get: () => props.modelValue,

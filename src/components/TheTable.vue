@@ -5,7 +5,12 @@ import { TheTableCol, AppInput, AppSelect, AppPagination } from '@/components'
 import { useSort } from '@/composables'
 import { filters } from '@/utils'
 import type { Head, Body, Filters } from '@/types'
-import { INACTIVE_VALUE, FILTERS_OPTIONS } from '@/constants'
+import {
+	INACTIVE_VALUE,
+	FILTERS_OPTIONS,
+	START_PAGE,
+	PAGE_ITEMS_COUNT,
+} from '@/constants'
 
 interface Props {
 	head: Head[]
@@ -62,26 +67,19 @@ const onChangeSelectedColOptionIndex = (e: Event) => {
 	selectedFilterOption.value = ''
 }
 
-const currentPage = ref(1)
-const pageItemsCount = 5
+const currentPage = ref(START_PAGE)
+const totalItemsCount = computed(() => body.value.length)
 const totalPageCount = computed(() => {
-	const totalItemsCount = body.value.length
-
-	return totalItemsCount < pageItemsCount
+	return totalItemsCount.value < PAGE_ITEMS_COUNT
 		? 1
-		: Math.ceil(totalItemsCount / pageItemsCount)
+		: Math.ceil(totalItemsCount.value / PAGE_ITEMS_COUNT)
 })
-
-const slice = computed((): { start: number; end: number } => {
-	const start = (currentPage.value - 1) * pageItemsCount
-	const end = Math.min(start + pageItemsCount, body.value.length)
+const slice = computed(() => {
+	const start = (currentPage.value - 1) * PAGE_ITEMS_COUNT
+	const end = Math.min(start + PAGE_ITEMS_COUNT, totalItemsCount.value)
 
 	return { start, end }
 })
-
-const onChangePage = (curPage: number) => {
-	currentPage.value = curPage
-}
 </script>
 
 <template>
@@ -116,14 +114,14 @@ const onChangePage = (curPage: number) => {
 			:sort-key="sortKey"
 			:order="order"
 			@set-sort-key="setSortKey"
-		/>
+		></TheTableCol>
 	</div>
 
 	<AppPagination
 		class="mt-4"
-		@on-change-page="onChangePage"
+		v-model="currentPage"
 		:total-pages-count="totalPageCount"
-	/>
+	></AppPagination>
 </template>
 
 <style scoped>

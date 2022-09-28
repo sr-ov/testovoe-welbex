@@ -2,34 +2,35 @@
 import { ref, computed, watch } from 'vue'
 
 import { AppButton } from '@/components'
+import { START_PAGE } from '@/constants'
 
 interface Props {
 	totalPagesCount: number
+	modelValue: number
 }
 interface Emits {
-	(e: 'onChangePage', currentPage: number): void
+	(e: 'update:modelValue', currentPage: number): void
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-const START_PAGE = 1
-
-const currentPage = ref(START_PAGE)
+const currentPage = computed({
+	get: () => props.modelValue,
+	set(currentPage: number) {
+		emit('update:modelValue', currentPage)
+	},
+})
 const isFirstPage = computed(() => currentPage.value === START_PAGE)
 const isLastPage = computed(() => currentPage.value === props.totalPagesCount)
 
 const onPrevPage = () => {
-	currentPage.value -= 1
+	currentPage.value = props.modelValue - 1
 }
 
 const onNextPage = () => {
-	currentPage.value += 1
+	currentPage.value = props.modelValue + 1
 }
-
-watch(currentPage, (newCurrenPage) => {
-	emit('onChangePage', newCurrenPage)
-})
 </script>
 
 <template>
